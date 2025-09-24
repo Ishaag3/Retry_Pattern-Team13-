@@ -4,7 +4,7 @@ A resilient Spring Boot application demonstrating the **Retry Pattern** using Sp
 
 ---
 
-## 🚀 Features
+## Features
 - **Weather API Integration**: Fetches real-time weather data for any city
 - **Retry Pattern**: Automatically retries failed API calls (with exponential backoff)
 - **Fallback Handling**: Graceful error handling and fallback response
@@ -13,7 +13,7 @@ A resilient Spring Boot application demonstrating the **Retry Pattern** using Sp
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 ```
 ├── src/
 │   ├── main/
@@ -33,7 +33,7 @@ A resilient Spring Boot application demonstrating the **Retry Pattern** using Sp
 
 ---
 
-## ⚙️ How It Works
+## How It Works
 - **User** enters a city in the UI
 - **Controller** receives the request and calls the service
 - **Service** fetches weather from an external API
@@ -43,7 +43,7 @@ A resilient Spring Boot application demonstrating the **Retry Pattern** using Sp
 
 ---
 
-## 🖥️ Running the Project
+## Running the Project
 
 1. **Clone the repository:**
    ```sh
@@ -68,14 +68,14 @@ A resilient Spring Boot application demonstrating the **Retry Pattern** using Sp
 
 ---
 
-## 🌐 API Usage
+## API Usage
 - `GET /weather/{city}`
   - Example: `/weather/London`
   - Returns: Weather data as JSON
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 - Java 17+ / Spring Boot
 - Spring Retry
 - RestTemplate
@@ -84,35 +84,10 @@ A resilient Spring Boot application demonstrating the **Retry Pattern** using Sp
 
 ---
 
-## 🤝 Team 13
+## Team 13
+- Ratanjot Singh
 - [Isha Agrawal](https://github.com/Ishaag3)
-- ...add your team members here...
+- Vibhuti Dua
+- Lakshay Jindal
 
 ---
-
-## 📦 License
-MIT
-
----
-
-## 📝 How to Upload to GitHub
-
-1. **Initialize git (if not already):**
-   ```sh
-   git init
-   git remote add origin https://github.com/Ishaag3/Retry_Pattern-Team13-.git
-   ```
-2. **Add and commit your files:**
-   ```sh
-   git add .
-   git commit -m "Initial commit: Weather Retry Pattern Demo"
-   ```
-3. **Push to GitHub:**
-   ```sh
-   git branch -M main
-   git push -u origin main
-   ```
-
----
-
-**Happy Coding!** 🚀
