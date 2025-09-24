@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App - Retry Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    .header {
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+      font-weight: 300;
+    }
+
+    .search-container {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 16px 20px 16px 50px;
+      border: 2px solid #e0e6ed;
+      border-radius: 50px;
+      font-size: 1em;
+      outline: none;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .search-box:focus {
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      font-size: 1.2em;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 16px 30px;
+      border-radius: 50px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .search-btn:active {
+      transform: translateY(0);
+    }
+
+    .search-btn.loading {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffffff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-container {
+      margin-top: 30px;
+      min-height: 100px;
+    }
+
+    .weather-card {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 20px;
+      animation: slideIn 0.5s ease;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .weather-card h3 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .weather-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .weather-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+
+    .weather-item i {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .weather-item .label {
+      font-size: 0.9em;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+
+    .weather-item .value {
+      font-size: 1.2em;
+      font-weight: 600;
+    }
+
+    .error-card {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-top: 20px;
+      animation: slideIn 0.5s ease;
+    }
+
+    .error-card i {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .retry-info {
+      background: rgba(102, 126, 234, 0.1);
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 5px;
+      color: #333;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+
+      .header h1 {
+        font-size: 2em;
+      }
+
+      .weather-info {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-cloud-sun"></i> WeatherScope</h1>
+      <p>Real-time weather with retry & fallback protection</p>
+    </div>
+    
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" id="city" class="search-box" placeholder="Enter city name (e.g., London, New York)" />
+    </div>
+    
+    <button onclick="getWeather()" class="search-btn" id="searchBtn">
+      <i class="loading-spinner" id="loadingSpinner"></i>
+      <span id="btnText">Get Weather Forecast</span>
+    </button>
+
+    <div class="retry-info">
+      <i class="fas fa-info-circle"></i>
+      <strong>Retry Pattern:</strong> This app automatically retries failed requests up to 3 times with exponential backoff (1.5s delay).
+    </div>
+
+    <div class="result-container" id="result"></div>
+  </div>
+
+  <script>
+    // Add Enter key support
+    document.getElementById('city').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        getWeather();
+      }
+    });
+
+    async function getWeather() {
+      const city = document.getElementById("city").value.trim();
+      const resultDiv = document.getElementById("result");
+      const searchBtn = document.getElementById("searchBtn");
+      const loadingSpinner = document.getElementById("loadingSpinner");
+      const btnText = document.getElementById("btnText");
+
+      if (!city) {
+        showError("Please enter a city name");
+        return;
+      }
+
+      // Show loading state
+      searchBtn.classList.add("loading");
+      searchBtn.disabled = true;
+      loadingSpinner.style.display = "inline-block";
+      btnText.textContent = "Fetching weather...";
+      resultDiv.innerHTML = "";
+
+      try {
+        const response = await fetch(`/weather/${encodeURIComponent(city)}`);
+        const data = await response.json();
+
+        if (data.message) {
+          showError(data.message);
+        } else {
+          showWeatherData(data);
+        }
+      } catch (err) {
+        showError("Unable to fetch weather data. Please check your connection and try again.");
+      } finally {
+        // Reset button state
+        searchBtn.classList.remove("loading");
+        searchBtn.disabled = false;
+        loadingSpinner.style.display = "none";
+        btnText.textContent = "Get Weather Forecast";
+      }
+    }
+
+    function showWeatherData(data) {
+      const resultDiv = document.getElementById("result");
+      
+      const weatherIconMap = {
+        'clear': 'fas fa-sun',
+        'cloud': 'fas fa-cloud',
+        'rain': 'fas fa-cloud-rain',
+        'snow': 'fas fa-snowflake',
+        'thunderstorm': 'fas fa-bolt',
+        'drizzle': 'fas fa-cloud-drizzle',
+        'mist': 'fas fa-smog',
+        'fog': 'fas fa-smog'
+      };
+
+      const weatherDesc = data.weather[0].description.toLowerCase();
+      let weatherIcon = 'fas fa-cloud-sun';
+      
+      for (const [key, icon] of Object.entries(weatherIconMap)) {
+        if (weatherDesc.includes(key)) {
+          weatherIcon = icon;
+          break;
+        }
+      }
+
+      resultDiv.innerHTML = `
+        <div class="weather-card">
+          <h3>
+            <i class="${weatherIcon}"></i>
+            ${data.name}, ${data.sys.country}
+          </h3>
+          <div class="weather-info">
+            <div class="weather-item">
+              <i class="fas fa-thermometer-half"></i>
+              <div class="label">Temperature</div>
+              <div class="value">${Math.round(data.main.temp)}°C</div>
+            </div>
+            <div class="weather-item">
+              <i class="fas fa-eye"></i>
+              <div class="label">Feels Like</div>
+              <div class="value">${Math.round(data.main.feels_like)}°C</div>
+            </div>
+            <div class="weather-item">
+              <i class="fas fa-tint"></i>
+              <div class="label">Humidity</div>
+              <div class="value">${data.main.humidity}%</div>
+            </div>
+            <div class="weather-item">
+              <i class="fas fa-wind"></i>
+              <div class="label">Wind Speed</div>
+              <div class="value">${data.wind.speed} m/s</div>
+            </div>
+          </div>
+          <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 10px;">
+            <i class="fas fa-cloud"></i>
+            <strong>Condition:</strong> ${data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)}
+          </div>
+        </div>
+      `;
+    }
+
+    function showError(message) {
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = `
+        <div class="error-card">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Oops! Something went wrong</h3>
+          <p>${message}</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
